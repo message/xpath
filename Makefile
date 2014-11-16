@@ -1,8 +1,8 @@
 CXXFLAGS =	-O2 -g -Wall -fmessage-length=0
 CFLAGS = -std=c++11
-OBJS =		xpath.o
+OBJS = xpath.o
 
-LIBS = -I /usr/local/Cellar/boost/1.56.0/include/ -L /usr/local/Cellar/boost/1.56.0/lib/ -lboost_system -lboost_filesystem
+LIBS = -I /usr/local/Cellar/boost/1.56.0/include/ -L /usr/local/Cellar/boost/1.56.0/lib/ -lboost_system -lboost_filesystem -lboost_program_options
 TARGET =	xpath
 
 $(TARGET):	$(OBJS)
