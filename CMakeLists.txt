@@ -3,7 +3,7 @@ project(xpath)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -std=c++11")
 
-set(SOURCE_FILES xpath.cpp)
+set(SOURCE_FILES xpath.cpp lib/pugixml/src/pugixml.cpp)
 set(Boost_USE_STATIC_LIBS        ON) # only find static libs
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
