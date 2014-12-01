@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
 		catch (po::error &e) {
 			cerr << "ERROR: " << e.what() << endl
 				<< endl << usage << endl << endl
-				<< "Example: xpath -r -e '/BetradarBetData/Sports/Sport[@BetradarSportID=\"1\"]' -f /usr -f /etc" << endl
+				<< "Example: xpath -r -e '/BetradarBetData/Sports/Sport[@BetradarSportID=\"19\"]/Category/Tournament/Match/MatchOdds/Bet[@OddsType=\"204\"]' -f /usr -f /etc" << endl
 				<< endl;
 			cerr << desc << endl;
 			return ERROR_IN_COMMAND_LINE;
