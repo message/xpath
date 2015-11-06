@@ -23,12 +23,9 @@ void evaluateXPath(boost::filesystem::path entry, pugi::xpath_query &xpath) {
 			pugi::xml_document doc;
 			if (doc.load_file(entry.string().c_str())) {
 				if(xpath.evaluate_boolean(doc)) {
-					cout << entry << endl;
+					cout << entry << " (" << fs::file_size(entry) / 1024 << " kb)" << endl;
 				}
-			} else {
-//				cout << "Failed to load: " << entry << endl;
 			}
-
 		}
 	}
 }
