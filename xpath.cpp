@@ -5,48 +5,59 @@
 #include <boost/program_options.hpp>
 #include "lib/pugixml/src/pugixml.hpp"
 
+
 using namespace std;
 
 namespace {
 	const size_t ERROR_IN_COMMAND_LINE = 1;
 	const size_t SUCCESS = 0;
 	const size_t ERROR_UNHANDLED_EXCEPTION = 2;
-
 }
 
-void evaluateXPath(boost::filesystem::path entry, pugi::xpath_query &xpath) {
-	namespace fs = boost::filesystem;
+namespace fs = boost::filesystem;
+namespace po = boost::program_options;
 
+bool evaluateXPath(fs::path entry, pugi::xpath_query &xpath) {
 	if (fs::is_regular_file(entry)) {
 		string extension = boost::algorithm::to_lower_copy(fs::extension(entry));
 		if (extension == ".xml") {
 			pugi::xml_document doc;
 			if (doc.load_file(entry.string().c_str())) {
 				if(xpath.evaluate_boolean(doc)) {
-					cout << entry << " (" << fs::file_size(entry) / 1024 << " kb)" << endl;
+					return true;
 				}
 			}
 		}
 	}
+
+	return false;
+}
+
+void printPathInfo(fs::path path, bool printSize) {
+	vector<string> parts;
+	parts.push_back(path.string().c_str());
+	if (printSize) {
+		parts.push_back("(" + (boost::lexical_cast<std::string>(fs::file_size(path) / 1024)) + " kb)");
+	}
+
+	cout << boost::algorithm::join(parts, " ") << endl;
 }
 
 int main(int argc, char **argv) {
 
 	try {
-		namespace po = boost::program_options;
-		namespace fs = boost::filesystem;
-
 		po::options_description desc("Options");
 
 		vector<string> files;
 		string expression = "";
 
 		desc.add_options()
-			("help", "Prints help messages")
-			("verbose,v", "Verbose output")
-			("recursive,r", "Will search for files in directories recursively")
-			("expression,e", po::value<string>(&expression)->required(), "XPath expression to test against XML files")
-			("file,f", po::value<vector<string> >(&files)->required(), "File or directory where to look for XML files");
+				("help", "Prints help messages")
+				("verbose,v", "Verbose output")
+				("size,s", "Outputs file size")
+				("recursive,r", "Will search for files in directories recursively")
+				("expression,e", po::value<string>(&expression)->required(), "XPath expression to test against XML files")
+				("file,f", po::value<vector<string> >(&files)->required(), "File or directory where to look for XML files");
 
 
 		po::variables_map variables_map;
@@ -98,18 +109,27 @@ int main(int argc, char **argv) {
 
 			// Recursive
 			if (fs::is_directory(path) && variables_map.count("recursive")) {
-				for (fs::directory_entry &entry : boost::make_iterator_range(fs::recursive_directory_iterator(path), {}))
-					evaluateXPath(entry.path(), xpath);
+				for (fs::directory_entry &entry : boost::make_iterator_range(fs::recursive_directory_iterator(path), {})) {
+					if(evaluateXPath(entry.path(), xpath)) {
+						printPathInfo(entry.path(), variables_map.count("size"));
+					}
+				}
 			}
-				// Single
+            // Single
 			else if (fs::is_directory(path) && !variables_map.count("recursive")) {
-				for (fs::directory_entry &entry : boost::make_iterator_range(fs::directory_iterator(path), {}))
-					evaluateXPath(entry.path(), xpath);
+				for (fs::directory_entry &entry : boost::make_iterator_range(fs::directory_iterator(path), {})) {
+					if(evaluateXPath(entry.path(), xpath)) {
+                        printPathInfo(entry.path(), variables_map.count("size"));
+                    }
+
+                }
 			}
-				// File
+            // File
 			else {
 				fs::path path(files[i]);
-				evaluateXPath(path, xpath);
+                if(evaluateXPath(path, xpath)) {
+                    printPathInfo(path, variables_map.count("size"));
+                }
 			}
 
 		}
