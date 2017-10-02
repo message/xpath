@@ -101,8 +101,13 @@ int main(int argc, char **argv) {
             <<
             "Example: xpath -r -e '/BetradarBetData/Sports/Sport[@BetradarSportID=\"19\"]/Category/Tournament/Match/MatchOdds/Bet[@OddsType=\"204\"]' -f /usr -f /etc" <<
             endl
+            
             << "Example: xpath -e '//BetResult[count(W[@OddsType=\"20\"]) > 1]' -f ~/FILE.XML" << endl
+            << endl
+
+            << "Example: xpath -r -p -e '/TainOdds/Match/Odds[@subtype=\"10299\"]' -f ~/FILE.XML" << endl
             << endl;
+
             cerr << desc << endl;
             return ERROR_IN_COMMAND_LINE;
         }
