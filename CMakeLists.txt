@@ -7,6 +7,7 @@ set(SOURCE_FILES xpath.cpp lib/pugixml/src/pugixml.cpp)
 set(Boost_USE_STATIC_LIBS        ON) # only find static libs
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY /usr/local/bin)
 
 # Boost
 find_package(Boost REQUIRED filesystem system program_options)
