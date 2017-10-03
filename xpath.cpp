@@ -51,11 +51,8 @@ void printNode(pugi::xpath_node_set nodeSet) {
     }
 
     for (pugi::xpath_node_set::const_iterator it = nodeSet.begin(); it != nodeSet.end(); ++it) {
-        pugi::xml_document doc;
         pugi::xpath_node node = *it;
-        doc.append_copy(node.node());
-        doc.print(cout);
-        doc.reset();
+        node.node().print(cout);
     }
 
     cout << "-----------------------------------------" << endl;
